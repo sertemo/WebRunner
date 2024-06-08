@@ -6,20 +6,11 @@
 ![GitHub](https://img.shields.io/github/license/sertemo/WebRunner)
 
 ## Descripción
+Aplicación para crear un bot en mi servidor que periódicamente visite cierta lista de páginas de forma automática y haga acciones generales como scroll o pinchar en algún sitio aleatorio.
 
-## Empezando
-
-### Pre-requisitos
-
-### Instalación
+Se encapsulará la aplicación en un docker y se usará un cronjob para crear un contenedor periódicamente en el que se ejecutará la aplicación. Al finalizar, el contenedor se borrará automáticamente.
 
 ## Uso
-
-## Desarrollo
-
-### Código de Conducta
-
-### Proceso de Pull Request
 
 ## SemVer
 
@@ -32,8 +23,9 @@
 ## Tecnologías
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Poetry](https://img.shields.io/badge/Poetry-60A5FA?style=for-the-badge&logo=python&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)
 
-## Contribuyentes
 
 ## Licencia
 Copyright 2024 Sergio Tejedor Moreno
