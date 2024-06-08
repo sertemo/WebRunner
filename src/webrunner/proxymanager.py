@@ -70,15 +70,18 @@ class ProxyManager:
 
         c = 1
         while c <= attempts:
-            logger.info(f"ATTEMPT {c}: Trying to get a valid proxy.from {source}...")
+            logger.info(f"ATTEMPT {c}: Trying to get a valid proxy from {source}...")
             proxy = random.choice(proxy_list)
+            logger.info(f"\tChecking proxy {proxy}...")
 
             # Verificar el código de estado HTTP
             status_code = self._check_url_status(url, proxy)
             if status_code == 200:
-                logger.info(f"SUCCESS: Proxy {proxy} works! in attempt {c}")
+                logger.info(f"\tSUCCESS: Proxy {proxy} works! in attempt {c}")
                 return proxy
             else:
-                logger.info("\tURL returned status code {status_code} with proxy {proxy}. Retrying...")
+                logger.info(f"\tURL returned status code {status_code} with proxy {proxy}. Retrying...")
             c += 1
+
+        logger.error(f"Failed to get a valid proxy from {source} in {attempts} attempts")
         return None

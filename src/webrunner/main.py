@@ -15,8 +15,21 @@
 from webrunner.navconfig import NavConfig
 from webrunner.browserfactory import BrowserFactory
 from webrunner.navigator import Navigator
+from webrunner.parser import Parser
+
 
 class WebRunnerApp:
+    def __init__(self) -> None:
+        self.parser = Parser()
+        self.navconfig = NavConfig(self.parser)
+        self.browser = BrowserFactory(self.parser)
 
-    def __init__(self):
-        pass
+    def run(self) -> None:
+        proxy = self.navconfig.load_proxy()
+        user_agent = self.navconfig.load_user_agent()
+        driver = self.browser.create_browser(proxy, user_agent)
+
+
+if __name__ == '__main__':
+    wr = WebRunnerApp()
+    wr.run()

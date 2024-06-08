@@ -1,26 +1,26 @@
 [navconfig]
-user-agent="random"  # random false o un user-agent válido
-proxy=false  # random false o un proxy válido
+user-agent = "random"  # random false o un user-agent válido
+proxy = false # random false o un proxy válido
 
 [proxyconfig]
-source="geonode"  # sslproxies o geonode o spys
-attemps=5
+source = "sslproxies"  # sslproxies o geonode o spys
+attempts = 5
 
 [browserconfig]
-type="Chrome"
-headless=true
-disable-gpu=true
-no-sandbox=true
-enable-javascript=true
-allow-insecure-localhost=true
-ignore-certificate-errors=true
-enable-automation=true
-disable-dev-shm-usage=true
-disable-blink-features=true
+type = "Chrome"
+headless = false
+disable-gpu = true
+no-sandbox = true
+enable-javascript = true
+allow-insecure-localhost = true
+ignore-certificate-errors = true
+enable-automation = true
+disable-dev-shm-usage = true
+disable-blink-features = true
 
 [navigatorconfig]
-max-random-actions=6
-urls=[
+max-random-actions = 6
+urls = [
     'https://tutorial-kopuru.streamlit.app/',
     'https://earthquakelocator.streamlit.app/',
     'https://stm-cv.streamlit.app/'
