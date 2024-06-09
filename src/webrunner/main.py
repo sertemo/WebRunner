@@ -47,4 +47,6 @@ if __name__ == "__main__":
     finish = time.perf_counter()
     minutos = (finish - start) // 60
     segundos = (finish - start) % 60
-    logger.info(f"Tiempo de ejecución: {minutos} minutos {segundos} segundos")
+    logger.info(
+        f"PROCESO TERMINADO | Tiempo de ejecución: {minutos:.0f} minutos {segundos:.0f} segundos"
+    )

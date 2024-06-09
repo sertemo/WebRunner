@@ -4,6 +4,7 @@
 ![Tests](https://github.com/sertemo/WebRunner/actions/workflows/tests.yml/badge.svg)
 ![Dependabot](https://img.shields.io/badge/dependabot-enabled-blue.svg?logo=dependabot)
 ![GitHub](https://img.shields.io/github/license/sertemo/WebRunner)
+![Docker](https://img.shields.io/docker/image-size/sertemo/WebRunner?color=blue&logo=docker)
 
 ## Descripción
 Aplicación para crear un bot en mi servidor que periódicamente visite cierta lista de páginas de forma automática y haga acciones generales como scroll o pinchar en algún sitio aleatorio.

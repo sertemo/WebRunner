@@ -28,6 +28,8 @@ from webrunner.settings import HEIGHT, WIDTH
 
 
 class WebNavigator(ABC):
+    def __init__(self) -> None:
+        self.driver: Chrome | Firefox = Chrome()
 
     def navigate(self, url: str):
         try:
@@ -69,6 +71,7 @@ class Navigator(WebNavigator):
         proxy: str | None = None,
         user_agent: str | None = None,
     ) -> None:
+        super().__init__()
         self.browser_factory = browser_factory
         self.url_list = parser.url_list
         self.max_actions = int(parser.max_actions)
@@ -82,12 +85,12 @@ class Navigator(WebNavigator):
             self.navigate(url)
 
     def open_browser(self) -> None:
-        self.driver: Chrome | Firefox = self.browser_factory.create_browser(
-            self.proxy, self.user_agent
-        )
+        self.driver = self.browser_factory.create_browser(self.proxy, self.user_agent)
 
     def visit_url(self, url: str) -> None:
-        self.driver.get(url)
+        """Abre la web indicada"""
+        if self.driver is not None:
+            self.driver.get(url)
 
     def perform_actions(self) -> None:
         """Realiza una acción aleatoria en la página."""
@@ -109,6 +112,7 @@ class Navigator(WebNavigator):
             count += 1
 
     def close_browser(self):
+        """Cierra el navegador"""
         try:
             self.driver.quit()
         except Exception as e:
