@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from abc import ABC, abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 import time
 
 from selenium.webdriver import Chrome, Firefox
@@ -26,12 +27,16 @@ from webrunner.logging_config import logger
 from webrunner.parser import Parser
 
 class WebNavigator(ABC):
+    def __init__(self, parser: Parser) -> None:
+        self.url_list = parser.url_list
+
     def kickoff(self):
-        # TODO : Meter aqui el bucle de las listas
-        pass
+        # TODO : Meter aqui el bucle de las listas con threadpoolexecutor
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            executor.map(self.navigate, self.url_list)
 
 
-    def navigate(self, url):
+    def navigate(self, url: str):
         try:
             self.visit_url(url)
             self.perform_actions()
