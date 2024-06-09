@@ -18,6 +18,7 @@ import toml
 
 from webrunner.settings import CONFIG_FILE
 
+
 class Parser:
     """Se ocupa de leer el archivo de configuración
     toml y devolver los parámetros deseados"""
@@ -55,3 +56,8 @@ class Parser:
     def proxy_source(self) -> str:
         """Devuelve la fuente de los proxies."""
         return self.parsed_toml["proxyconfig"]["source"]
+
+    @property
+    def max_actions(self) -> str:
+        """Devuelve el número maximo de acciones a realizar."""
+        return self.parsed_toml["navigatorconfig"]["max-random-actions"]

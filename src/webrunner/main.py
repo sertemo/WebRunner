@@ -28,10 +28,11 @@ class WebRunnerApp:
         proxy = self.navconfig.load_proxy()
         user_agent = self.navconfig.load_user_agent()
         driver = self.browser.create_browser(proxy, user_agent)
-        
-        nav = Navigator()
+
+        nav = Navigator(driver, self.parser)
+        nav.kickoff()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     wr = WebRunnerApp()
     wr.run()

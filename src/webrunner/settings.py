@@ -22,7 +22,11 @@ LOG_PATH = FOLDER_LOGS / LOG_FILE
 # config
 CONFIG_FILE = "wr_config.toml"
 
-#user-agents file
+# user-agents file
 USER_AGENTS_FOLDER = Path("assets/agents")
 USER_AGENT_FILE = "user_agents.txt"
 USER_AGENT_PATH = USER_AGENTS_FOLDER / USER_AGENT_FILE
+
+# browser window
+HEIGHT = 800
+WIDTH = 800

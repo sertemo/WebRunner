@@ -20,6 +20,7 @@ import requests
 from webrunner.logging_config import logger
 from webrunner.proxyscrapper import ProxyScrapper
 
+
 class ProxyManager:
     """Clase que se ocupa de la gestión de los proxies para el navegador.
     En funcion de la configuración escogida por el usuario en wr_config.toml
@@ -32,10 +33,7 @@ class ProxyManager:
 
     def _check_url_status(self, url: str, proxy: str):
         try:
-            proxies = {
-                'http': proxy,
-                'https': proxy
-            }
+            proxies = {"http": proxy, "https": proxy}
             response = requests.get(url, proxies=proxies, timeout=10, verify=False)
             return response.status_code
         except requests.exceptions.ProxyError as e:
@@ -46,13 +44,9 @@ class ProxyManager:
             logger.error(msg)
             return None
 
-
     def get_random_proxy(
-            self,
-            url: str,
-            attempts: int,
-            source: Literal['sslproxies', 'geonode', 'spys']
-            ) -> str | None:
+        self, url: str, attempts: int, source: Literal["sslproxies", "geonode", "spys"]
+    ) -> str | None:
         """Devuelve un proxy aleatorio funcional. Si ninguno es funcional
         después de varios intentos devuelve None."""
 
@@ -62,7 +56,6 @@ class ProxyManager:
             proxy_list = self.ps.from_geonode()
         else:
             proxy_list = self.ps.from_spys()
-
 
         if not proxy_list:
             logger.error(f"No proxies found in {source}")
@@ -80,8 +73,12 @@ class ProxyManager:
                 logger.info(f"\tSUCCESS: Proxy {proxy} works! in attempt {c}")
                 return proxy
             else:
-                logger.info(f"\tURL returned status code {status_code} with proxy {proxy}. Retrying...")
+                logger.info(
+                    f"\tURL returned status code {status_code} with proxy {proxy}. Retrying..."
+                )
             c += 1
 
-        logger.error(f"Failed to get a valid proxy from {source} in {attempts} attempts")
+        logger.error(
+            f"Failed to get a valid proxy from {source} in {attempts} attempts"
+        )
         return None

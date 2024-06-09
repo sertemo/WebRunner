@@ -21,11 +21,12 @@ from webrunner.parser import Parser
 from webrunner.proxymanager import ProxyManager
 from webrunner.settings import USER_AGENT_PATH
 
+
 class NavConfig:
     def __init__(self, parser: Parser) -> None:
         self.pm = ProxyManager()
         self.parser = parser
-    
+
     def load_proxy(self) -> str | None:
         """Devuelve un proxy aleatorio funcional, o
         un proxy determinado por el usuario o None
@@ -36,7 +37,7 @@ class NavConfig:
 
         if proxy_config == "random":
             return self.pm.get_random_proxy(self.parser.url_list[0], n_attemps, source)
-        elif proxy_config == False:
+        elif not proxy_config:
             return None
         else:
             return str(proxy_config)
@@ -48,8 +49,7 @@ class NavConfig:
             with open(USER_AGENT_PATH) as f:
                 user_agents = [line.strip() for line in f]
             return random.choice(user_agents)
-        elif user_agent_config == False:
+        elif not user_agent_config:
             return None
         else:
             return user_agent_config
-
