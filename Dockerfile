@@ -43,13 +43,9 @@ RUN CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\
     echo "Chrome major version: $CHROME_MAJOR_VERSION"
 
 # Separar los pasos para una mejor depuración
-#RUN CHROME_MAJOR_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | cut -d '.' -f 1) && \
-#    echo "Chrome major version: $CHROME_MAJOR_VERSION" && \
-#    CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_MAJOR_VERSION) && \
-#    echo "ChromeDriver version: $CHROMEDRIVER_VERSION" && \
-#    curl -sS -o /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" && \
-#    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-#    rm /tmp/chromedriver.zip
+RUN curl -sS -o /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.141/linux64/chrome-linux64.zip" && \
+    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
+    rm /tmp/chromedriver.zip
 
 # Copia los archivos de la aplicación
 COPY . /app
