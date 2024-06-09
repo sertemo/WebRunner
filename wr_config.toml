@@ -8,7 +8,7 @@ attempts = 5
 
 [browserconfig]
 type = "Chrome"
-headless = false
+headless = true
 disable-gpu = true
 no-sandbox = true
 enable-javascript = true
@@ -19,9 +19,15 @@ disable-dev-shm-usage = true
 disable-blink-features = true
 
 [navigatorconfig]
-max-random-actions = 6
+max-actions = 4
 urls = [
     'https://tutorial-kopuru.streamlit.app/',
     'https://earthquakelocator.streamlit.app/',
-    'https://stm-cv.streamlit.app/'
+    'https://stm-cv.streamlit.app/',
+    'https://kopuru-model-eval.streamlit.app/',
+    'https://litteragpt.streamlit.app/',
+    'https://www.tejedormoreno.com/',
+    'https://collatzeral.streamlit.app/',
+    'https://graphicator.streamlit.app/',
+    'https://talsa-mailing.streamlit.app/'
     ]

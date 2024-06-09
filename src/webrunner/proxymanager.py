@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import random
-from typing import Literal
 
 import requests
 
@@ -44,9 +43,7 @@ class ProxyManager:
             logger.error(msg)
             return None
 
-    def get_random_proxy(
-        self, url: str, attempts: int, source: Literal["sslproxies", "geonode", "spys"]
-    ) -> str | None:
+    def get_random_proxy(self, url: str, attempts: int, source: str) -> str | None:
         """Devuelve un proxy aleatorio funcional. Si ninguno es funcional
         después de varios intentos devuelve None."""
 

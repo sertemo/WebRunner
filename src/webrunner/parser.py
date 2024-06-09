@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Literal, Union
+from typing import Any
 
 import toml
 
@@ -30,34 +30,41 @@ class Parser:
     @property
     def user_agent_config(self) -> str:  # Si es random o nada o una predeterminada
         """Devuelve la configuración del user agent."""
-        return self.parsed_toml["navconfig"]["user-agent"]
+        output: str = self.parsed_toml["navconfig"]["user-agent"]
+        return output
 
     @property
     def proxy_config(self) -> str | bool:  # Si es random o nada o una predeterminada
         """Devuelve la configuración del proxy."""
-        return self.parsed_toml["navconfig"]["proxy"]
+        output: str | bool = self.parsed_toml["navconfig"]["proxy"]
+        return output
 
     @property
     def browser_config(self) -> dict[str, Any]:  # Si es Chrome o Firefox y las opciones
         """Devuelve la configuración del navegador con todas sus opciones."""
-        return self.parsed_toml["browserconfig"]
+        output: dict[str, Any] = self.parsed_toml["browserconfig"]
+        return output
 
     @property
     def url_list(self) -> list[str]:
         """Devuelve una lista de URLs a visitar."""
-        return self.parsed_toml["navigatorconfig"]["urls"]
+        output: list[str] = self.parsed_toml["navigatorconfig"]["urls"]
+        return output
 
     @property
     def proxy_attempts(self) -> int:
         """Devuelve el numero de intentos de proxy."""
-        return self.parsed_toml["proxyconfig"]["attempts"]
+        output: int = self.parsed_toml["proxyconfig"]["attempts"]
+        return output
 
     @property
     def proxy_source(self) -> str:
         """Devuelve la fuente de los proxies."""
-        return self.parsed_toml["proxyconfig"]["source"]
+        output: str = self.parsed_toml["proxyconfig"]["source"]
+        return output
 
     @property
     def max_actions(self) -> str:
         """Devuelve el número maximo de acciones a realizar."""
-        return self.parsed_toml["navigatorconfig"]["max-random-actions"]
+        output: str = self.parsed_toml["navigatorconfig"]["max-actions"]
+        return output

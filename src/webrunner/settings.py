@@ -30,3 +30,10 @@ USER_AGENT_PATH = USER_AGENTS_FOLDER / USER_AGENT_FILE
 # browser window
 HEIGHT = 800
 WIDTH = 800
+
+# Proxy
+PROXY_SOURCES = [
+    "sslproxies",
+    "geonode",
+    "spys",
+]

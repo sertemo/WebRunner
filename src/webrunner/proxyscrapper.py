@@ -83,4 +83,5 @@ class ProxyScrapper:
 
     def from_spys(self) -> list[str]:
         url = "https://spys.one/en/free-proxy-list/"
+        print(url)
         raise NotImplementedError

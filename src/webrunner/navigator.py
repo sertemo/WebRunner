@@ -13,21 +13,17 @@
 # limitations under the License.
 
 from abc import ABC, abstractmethod
-from concurrent.futures import ThreadPoolExecutor
+
+# from concurrent.futures import ThreadPoolExecutor
 import random
 import time
 
 from selenium.webdriver import Chrome, Firefox
-
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
+from webrunner.browserfactory import BrowserFactory
 from webrunner.logging_config import logger
 from webrunner.parser import Parser
-
 from webrunner.settings import HEIGHT, WIDTH
 
 
@@ -35,8 +31,11 @@ class WebNavigator(ABC):
 
     def navigate(self, url: str):
         try:
+            logger.info(f"[{url}] | ABRIENDO EL BROWSER ...")
+            self.open_browser()
             logger.info(f"[{url}] | VISITANDO ...")
             self.visit_url(url)
+            time.sleep(8)
             logger.info(f"[{url}] | REALIZANDO ACCIONES ...")
             self.perform_actions()
         except Exception as e:
@@ -44,6 +43,10 @@ class WebNavigator(ABC):
         finally:
             logger.info(f"[{url}] | CERRANDO EL BROWSER ...")
             self.close_browser()
+
+    @abstractmethod
+    def open_browser(self):
+        pass
 
     @abstractmethod
     def visit_url(self, url):
@@ -59,41 +62,54 @@ class WebNavigator(ABC):
 
 
 class Navigator(WebNavigator):
-    def __init__(self, driver: Chrome | Firefox, parser: Parser) -> None:
-        self.driver = driver
+    def __init__(
+        self,
+        browser_factory: BrowserFactory,
+        parser: Parser,
+        proxy: str | None = None,
+        user_agent: str | None = None,
+    ) -> None:
+        self.browser_factory = browser_factory
         self.url_list = parser.url_list
-        self.max_actions = parser.max_actions
+        self.max_actions = int(parser.max_actions)
+        self.proxy = proxy
+        self.user_agent = user_agent
 
     def kickoff(self):
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            executor.map(self.navigate, self.url_list)
+        """with ThreadPoolExecutor(max_workers=8) as executor:
+        executor.map(self.navigate, self.url_list)"""
+        for url in self.url_list:
+            self.navigate(url)
 
-    def visit_url(self, url: str):
+    def open_browser(self) -> None:
+        self.driver: Chrome | Firefox = self.browser_factory.create_browser(
+            self.proxy, self.user_agent
+        )
+
+    def visit_url(self, url: str) -> None:
         self.driver.get(url)
-        time.sleep(6)
 
-    def perform_actions(self):
+    def perform_actions(self) -> None:
         """Realiza una acción aleatoria en la página."""
         n = random.choice(range(1, self.max_actions))
         count = 1
 
         logger.info(f"\t[ACTION] Performing {n} actions:")
         while count <= n:
-            action = random.choice(["scroll", "click"])
-            if action == "scroll":
-                # Scroll hacia abajo
-                self.driver.execute_script("window.scrollBy(0, window.innerHeight);")
-                logger.info("\t[ACTION] Scrolling down the page.")
-                time.sleep(4)
-            elif action == "click":
-                # Hacer clic en una posición aleatoria de la página
-                x = random.choice(range(0, WIDTH // 2))
-                y = random.choice(range(0, HEIGHT // 2))
-                action_chains = ActionChains(self.driver)
-                action_chains.move_by_offset(0, 0).click().perform()
+            # Hacer clic en una posición aleatoria de la página
+            x = random.choice(range(0, WIDTH // 2))
+            y = random.choice(range(0, HEIGHT // 2))
+            action_chains = ActionChains(self.driver)
+            try:
+                action_chains.move_by_offset(x, y).click().perform()
                 logger.info(f"\t[ACTION] Clicking at random position ({x}, {y}).")
-                time.sleep(4)
+            except Exception as e:
+                logger.error(f"\t[ACTION] Error clicking at ({x}, {y}): {e}")
+            time.sleep(5)
             count += 1
 
     def close_browser(self):
-        self.driver.quit()
+        try:
+            self.driver.quit()
+        except Exception as e:
+            logger.error(f"Error closing browser: {e}")

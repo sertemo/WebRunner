@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 from selenium.webdriver import Chrome, Firefox
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -30,7 +31,7 @@ class BrowserFactory:
         """Prepara las opciones del navegador de Chrome."""
         options = ChromeOptions()
         # Configuramos la pantalla con una determinada
-        options.add_argument("--window-size=800,800")
+        options.add_argument("--window-size=1000,1000")
 
         if self.browser_config["headless"]:
             options.add_argument("--headless")  # Para ejecutar en modo headless
@@ -55,6 +56,9 @@ class BrowserFactory:
             options.add_argument(f"--proxy-server={proxy}")
         if user_agent is not None:
             options.add_argument(f"user-agent={user_agent}")
+
+        # Merge capabilities into options
+        options.set_capability("goog:chromeOptions", options.to_capabilities())
         return options
 
     def _prepare_firefox_options(
@@ -63,8 +67,8 @@ class BrowserFactory:
         """Prepara las opciones del navegador de Firefox."""
         options = FirefoxOptions()
         # Configuramos la pantalla con una determinada dimensión
-        options.add_argument("--width=800")
-        options.add_argument("--height=800")
+        options.add_argument("--width=1500")
+        options.add_argument("--height=1000")
 
         if self.browser_config["headless"]:
             options.add_argument("--headless")  # Para ejecutar en modo headless
@@ -103,6 +107,8 @@ class BrowserFactory:
             options.set_preference("network.proxy.no_proxies_on", "")
         if user_agent is not None:
             options.set_preference("general.useragent.override", user_agent)
+
+        options.set_capability("moz:firefoxOptions", options.to_capabilities())
         return options
 
     def create_browser(
@@ -112,11 +118,17 @@ class BrowserFactory:
         las opciones del usuario"""
 
         if self.browser_config["type"].lower() == "chrome":
-            options = self._prepare_chrome_options(proxy, user_agent)
-            logger.info(f"Creating Chrome browser with options: {options}")
-            return Chrome(options=options)
+            chrome_options = self._prepare_chrome_options(proxy, user_agent)
+            logger.info(
+                f"Creating Chrome browser with options: {chrome_options.arguments}\n"
+                f"\tUSER AGENT: {user_agent}"
+                f"\tPROXY: {proxy}"
+            )
+            return Chrome(options=chrome_options)
+
         elif self.browser_config["type"].lower() == "firefox":
-            options = self._prepare_firefox_options(proxy, user_agent)
-            logger.info(f"Creating Firefox browser with options: {options}")
-            return Firefox(options=options)
+            firefox_options = self._prepare_firefox_options(proxy, user_agent)
+            logger.info(f"Creating Firefox browser with options: {firefox_options}")
+            return Firefox(options=firefox_options)
+
         raise ValueError(f"Unsupported browser type: {self.browser_config['browser']}")

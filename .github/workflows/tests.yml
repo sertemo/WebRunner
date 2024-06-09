@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/pypoetry
@@ -71,7 +71,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/pypoetry
@@ -97,7 +97,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/pypoetry
@@ -123,7 +123,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Cache poetry
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.cache/pypoetry

@@ -17,9 +17,10 @@ user-agents y el proxymanager."""
 
 import random
 
+from webrunner.logging_config import logger
 from webrunner.parser import Parser
 from webrunner.proxymanager import ProxyManager
-from webrunner.settings import USER_AGENT_PATH
+from webrunner.settings import USER_AGENT_PATH, PROXY_SOURCES
 
 
 class NavConfig:
@@ -35,6 +36,11 @@ class NavConfig:
         n_attemps = self.parser.proxy_attempts
         source = self.parser.proxy_source
 
+        if source not in PROXY_SOURCES:
+            msg = f"Source '{source}' not supported. "
+            logger.error(msg)
+            raise ValueError(f"Source '{source}' not supported.")
+
         if proxy_config == "random":
             return self.pm.get_random_proxy(self.parser.url_list[0], n_attemps, source)
         elif not proxy_config:
@@ -42,7 +48,7 @@ class NavConfig:
         else:
             return str(proxy_config)
 
-    def load_user_agent(self) -> str:
+    def load_user_agent(self) -> str | None:
         """Devuelve un user-agent aleatorio o una predeterminada."""
         user_agent_config = self.parser.user_agent_config
         if user_agent_config == "random":
@@ -52,4 +58,4 @@ class NavConfig:
         elif not user_agent_config:
             return None
         else:
-            return user_agent_config
+            return str(user_agent_config)

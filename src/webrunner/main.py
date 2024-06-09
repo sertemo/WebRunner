@@ -12,27 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from webrunner.navconfig import NavConfig
+import time
+
 from webrunner.browserfactory import BrowserFactory
+from webrunner.navconfig import NavConfig
 from webrunner.navigator import Navigator
 from webrunner.parser import Parser
+from webrunner.logging_config import logger
 
 
 class WebRunnerApp:
     def __init__(self) -> None:
         self.parser = Parser()
         self.navconfig = NavConfig(self.parser)
-        self.browser = BrowserFactory(self.parser)
+        self.browser_factory = BrowserFactory(self.parser)
 
     def run(self) -> None:
         proxy = self.navconfig.load_proxy()
         user_agent = self.navconfig.load_user_agent()
-        driver = self.browser.create_browser(proxy, user_agent)
 
-        nav = Navigator(driver, self.parser)
+        nav = Navigator(
+            browser_factory=self.browser_factory,
+            parser=self.parser,
+            proxy=proxy,
+            user_agent=user_agent,
+        )
         nav.kickoff()
 
 
 if __name__ == "__main__":
     wr = WebRunnerApp()
+    start = time.perf_counter()
     wr.run()
+    finish = time.perf_counter()
+    minutos = (finish - start) // 60
+    segundos = (finish - start) % 60
+    logger.info(f"Tiempo de ejecución: {minutos} minutos {segundos} segundos")
