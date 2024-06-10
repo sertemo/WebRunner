@@ -16,6 +16,7 @@
 from selenium.webdriver import Chrome, Firefox
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 from webrunner.parser import Parser
 from webrunner.logging_config import logger
@@ -32,6 +33,7 @@ class BrowserFactory:
         options = ChromeOptions()
         # Configuramos la pantalla con una determinada
         options.add_argument("--window-size=1000,1000")
+        options.add_argument("--remote-debugging-port=9222")
 
         if self.browser_config["headless"]:
             options.add_argument("--headless")  # Para ejecutar en modo headless
@@ -58,7 +60,7 @@ class BrowserFactory:
             options.add_argument(f"user-agent={user_agent}")
 
         # Merge capabilities into options
-        options.set_capability("goog:chromeOptions", options.to_capabilities())
+        # options.set_capability("goog:chromeOptions", options.to_capabilities())
         return options
 
     def _prepare_firefox_options(
@@ -119,12 +121,14 @@ class BrowserFactory:
 
         if self.browser_config["type"].lower() == "chrome":
             chrome_options = self._prepare_chrome_options(proxy, user_agent)
+            service = ChromeService("/usr/local/bin/chromedriver")
             logger.info(
                 f"Creating Chrome browser with options: {chrome_options.arguments}\n"
                 f"\tUSER AGENT: {user_agent}"
                 f"\tPROXY: {proxy}"
+                f"\tSERVICE: {service}"
             )
-            return Chrome(options=chrome_options)
+            return Chrome(options=chrome_options, service=service)
 
         elif self.browser_config["type"].lower() == "firefox":
             firefox_options = self._prepare_firefox_options(proxy, user_agent)
