@@ -13,9 +13,15 @@
 # limitations under the License.
 
 
-from selenium.webdriver import Chrome, Firefox
+# https://nander.cc/using-selenium-within-a-docker-container
+
+import os
+
+from selenium.webdriver import Chrome, Firefox, Remote
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+# from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.service import Service as ChromeService
 
 from webrunner.parser import Parser
@@ -31,10 +37,6 @@ class BrowserFactory:
     ) -> ChromeOptions:
         """Prepara las opciones del navegador de Chrome."""
         options = ChromeOptions()
-        # Configuramos la pantalla con una determinada
-        options.add_argument("--window-size=1000,1000")
-        options.add_argument("--remote-debugging-port=9222")
-
         if self.browser_config["headless"]:
             options.add_argument("--headless")  # Para ejecutar en modo headless
         if self.browser_config["disable-gpu"]:
@@ -46,6 +48,7 @@ class BrowserFactory:
         if self.browser_config["allow-insecure-localhost"]:
             options.add_argument("--allow-insecure-localhost")
         if self.browser_config["ignore-certificate-errors"]:
+            options.add_argument("--ignore-ssl-errors=yes")
             options.add_argument("--ignore-certificate-errors")
         if self.browser_config["enable-automation"]:
             options.add_argument("--enable-automation")
@@ -58,9 +61,6 @@ class BrowserFactory:
             options.add_argument(f"--proxy-server={proxy}")
         if user_agent is not None:
             options.add_argument(f"user-agent={user_agent}")
-
-        # Merge capabilities into options
-        # options.set_capability("goog:chromeOptions", options.to_capabilities())
         return options
 
     def _prepare_firefox_options(
@@ -114,25 +114,47 @@ class BrowserFactory:
         return options
 
     def create_browser(
-        self, proxy: str | None, user_agent: str | None
-    ) -> Chrome | Firefox:
+        self, proxy: str | None, user_agent: str | None, remote: bool = True
+    ) -> Chrome | Firefox | Remote:
         """Devuelve un navegador de Chrome o Firefox con
         las opciones del usuario"""
 
         if self.browser_config["type"].lower() == "chrome":
             chrome_options = self._prepare_chrome_options(proxy, user_agent)
-            service = ChromeService("/usr/local/bin/chromedriver")
-            logger.info(
-                f"Creating Chrome browser with options: {chrome_options.arguments}\n"
-                f"\tUSER AGENT: {user_agent}"
-                f"\tPROXY: {proxy}"
-                f"\tSERVICE: {service}"
-            )
-            return Chrome(options=chrome_options, service=service)
+
+            if remote:
+                # Remote para usar Selenium Grid
+                command_executor = f"http://{os.getenv('SELENIUM_HUB_HOST')}:{os.getenv('SELENIUM_HUB_PORT')}/wd/hub"
+
+                logger.info(
+                    f"Creating Chrome browser with REMOTE\n"
+                    f"\tCOMMAND EXECUTOR: {command_executor}"
+                    f"\tUSER AGENT: {user_agent}"
+                    f"\tPROXY: {proxy}"
+                )
+                return Remote(
+                    command_executor=command_executor,
+                    options=chrome_options,
+                )
+            else:
+                service = ChromeService("/usr/local/bin/chromedriver")
+                logger.info(
+                    f"Creating Chrome browser\n"
+                    f"\tUSER AGENT: {user_agent}"
+                    f"\tPROXY: {proxy}"
+                    f"\tSERVICE: {service}"
+                )
+                return Chrome(options=chrome_options, service=service)
 
         elif self.browser_config["type"].lower() == "firefox":
             firefox_options = self._prepare_firefox_options(proxy, user_agent)
-            logger.info(f"Creating Firefox browser with options: {firefox_options}")
-            return Firefox(options=firefox_options)
+            logger.info(f"Creating FIREFOX browser with options: {firefox_options}")
+            if remote:
+                return Remote(
+                    command_executor="http://selenium-hub:4444/wd/hub",
+                    options=firefox_options,
+                )
+            else:
+                return Firefox(options=firefox_options)
 
         raise ValueError(f"Unsupported browser type: {self.browser_config['browser']}")

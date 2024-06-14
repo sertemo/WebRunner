@@ -18,7 +18,7 @@ from abc import ABC, abstractmethod
 import random
 import time
 
-from selenium.webdriver import Chrome, Firefox
+from selenium.webdriver import Chrome, Firefox, Remote
 from selenium.webdriver.common.action_chains import ActionChains
 
 from webrunner.browserfactory import BrowserFactory
@@ -29,7 +29,7 @@ from webrunner.settings import HEIGHT, WIDTH
 
 class WebNavigator(ABC):
     def __init__(self) -> None:
-        self.driver: Chrome | Firefox = Chrome()
+        self.driver: Chrome | Firefox | Remote | None = None
 
     def navigate(self, url: str):
         try:
@@ -87,6 +87,11 @@ class Navigator(WebNavigator):
     def open_browser(self) -> None:
         self.driver = self.browser_factory.create_browser(self.proxy, self.user_agent)
 
+    @property
+    def n_url(self) -> int:
+        """Devuelve el número de urls visitadas"""
+        return len(self.url_list)
+
     def visit_url(self, url: str) -> None:
         """Abre la web indicada"""
         if self.driver is not None:
@@ -96,6 +101,9 @@ class Navigator(WebNavigator):
         """Realiza una acción aleatoria en la página."""
         n = random.choice(range(1, self.max_actions))
         count = 1
+
+        if self.driver is None:
+            return
 
         logger.info(f"\t[ACTION] Performing {n} actions:")
         while count <= n:
@@ -113,7 +121,8 @@ class Navigator(WebNavigator):
 
     def close_browser(self):
         """Cierra el navegador"""
-        try:
-            self.driver.quit()
-        except Exception as e:
-            logger.error(f"Error closing browser: {e}")
+        if self.driver is not None:
+            try:
+                self.driver.quit()
+            except Exception as e:
+                logger.error(f"Error closing browser: {e}")

@@ -44,57 +44,16 @@ COPY pyproject.toml poetry.lock* /app/
 # Instalar dependencias de proyecto utilizando Poetry
 RUN poetry install --no-dev --no-interaction --no-ansi
 
-ENV CHROME_VERSION="125.0.6422.141"
-# Añadir las claves GPG de Chrome
-RUN curl -sSL https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-# Añadir el repositorio de Chrome
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list    
-# Instalar Chrome y limpiar
-RUN bash -c 'for i in {1..5}; do apt-get update && apt-get install -y google-chrome-stable && break || sleep 15; done' && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*    
-# Obtener la versión actual de Chrome instalada
-RUN google-chrome --version
-
-# Install ChromeDriver that matches the Chrome version y limpiamos
-RUN curl -sS -o /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    rm /tmp/chromedriver.zip && \
-    mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
-    chmod +x /usr/local/bin/chromedriver && \
-    ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver && \
-    rm -rf /var/lib/apt/lists/*
-
-# Instalar Chrome Headless Shell
-RUN curl -sS -o /tmp/chrome-headless-shell.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chrome-headless-shell-linux64.zip" && \
-    unzip /tmp/chrome-headless-shell.zip -d /usr/local/bin/ && \
-    rm /tmp/chrome-headless-shell.zip && \
-    chmod +x /usr/local/bin/chrome-headless-shell-linux64/chrome-headless-shell && \
-    ln -s /usr/local/bin/chrome-headless-shell-linux64/chrome-headless-shell /usr/bin/chrome-headless-shell && \
-    rm -rf /var/lib/apt/lists/*
-
 # Copia los archivos de la aplicación
 COPY . /app
 
-# Establecer variables de entorno necesarias para Selenium y ChromeDriver
+# Establecer variables de entorno necesarias para Selenium y Firefox
 ENV PYTHONUNBUFFERED=1 \
-    CHROME_DRIVER_PATH=/usr/local/bin/chromedriver \
-    CHROME_BIN=/usr/bin/google-chrome \
-    HEADLESS_SHELL_BIN=/usr/bin/chrome-headless-shell \
-    PYTHONPATH=/app/src:$PYTHONPATH
+CHROME_DRIVER_PATH=/usr/local/bin/chromedriver \
+CHROME_BIN=/usr/bin/google-chrome \
+PYTHONPATH=/app/src:$PYTHONPATH
 
 # Comando por defecto
 CMD ["python", "src/webrunner/main.py"]
-
-
-
-
-
-
-
-
-
-
-
 
 

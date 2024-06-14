@@ -31,13 +31,13 @@ class WebRunnerApp:
         proxy = self.navconfig.load_proxy()
         user_agent = self.navconfig.load_user_agent()
 
-        nav = Navigator(
+        self.nav = Navigator(
             browser_factory=self.browser_factory,
             parser=self.parser,
             proxy=proxy,
             user_agent=user_agent,
         )
-        nav.kickoff()
+        self.nav.kickoff()
 
 
 if __name__ == "__main__":
@@ -49,4 +49,5 @@ if __name__ == "__main__":
     segundos = (finish - start) % 60
     logger.info(
         f"PROCESO TERMINADO | Tiempo de ejecución: {minutos:.0f} minutos {segundos:.0f} segundos"
+        f"{wr.nav.url_list} URL VISITADAS"
     )
