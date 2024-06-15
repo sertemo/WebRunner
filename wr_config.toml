@@ -1,6 +1,6 @@
 [navconfig]
 user-agent = "random"  # random false o un user-agent válido
-proxy = false # random false o un proxy válido
+proxy = "random" # random false o un proxy válido
 
 [proxyconfig]
 source = "sslproxies"  # sslproxies o geonode o spys

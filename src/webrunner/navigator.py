@@ -85,7 +85,9 @@ class Navigator(WebNavigator):
             self.navigate(url)
 
     def open_browser(self) -> None:
-        self.driver = self.browser_factory.create_browser(self.proxy, self.user_agent)
+        self.driver = self.browser_factory.create_browser(
+            self.proxy, self.user_agent, remote=False
+        )
 
     @property
     def n_url(self) -> int:
@@ -119,7 +121,7 @@ class Navigator(WebNavigator):
             time.sleep(5)
             count += 1
 
-    def close_browser(self):
+    def close_browser(self) -> None:
         """Cierra el navegador"""
         if self.driver is not None:
             try:

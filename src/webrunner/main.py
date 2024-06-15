@@ -48,6 +48,6 @@ if __name__ == "__main__":
     minutos = (finish - start) // 60
     segundos = (finish - start) % 60
     logger.info(
-        f"PROCESO TERMINADO | Tiempo de ejecución: {minutos:.0f} minutos {segundos:.0f} segundos"
-        f"{wr.nav.url_list} URL VISITADAS"
+        f"PROCESO TERMINADO | Tiempo de ejecución: {minutos:.0f} minutos {segundos:.0f} segundos | "
+        f"{wr.nav.n_url} URL VISITADAS"
     )
