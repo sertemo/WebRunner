@@ -12,6 +12,46 @@ Aplicación para crear un bot en mi servidor que periódicamente visite cierta l
 Se encapsulará la aplicación en un docker y se usará un cronjob para crear un contenedor periódicamente en el que se ejecutará la aplicación. Al finalizar, el contenedor se borrará automáticamente.
 
 ## Uso
+Para realizar alguna modificación de los parámetros de la aplicación, basta con cambiar la configuración del archivo `wr_config.toml` que luce así:
+```toml
+[navconfig]
+user-agent = "random"  # random false o un user-agent válido
+proxy = "random" # random false o un proxy válido
+
+[proxyconfig]
+source = "sslproxies"  # sslproxies o geonode o spys
+attempts = 5
+
+[browserconfig]
+type = "Chrome"
+headless = true
+disable-gpu = true
+no-sandbox = true
+enable-javascript = true
+allow-insecure-localhost = true
+ignore-certificate-errors = true
+enable-automation = true
+disable-dev-shm-usage = true
+disable-blink-features = true
+
+[navigatorconfig]
+max-actions = 4
+urls = [
+    'https://tutorial-kopuru.streamlit.app/',
+    'https://earthquakelocator.streamlit.app/',
+    'https://stm-cv.streamlit.app/',
+    'https://kopuru-model-eval.streamlit.app/',
+    'https://litteragpt.streamlit.app/',
+    'https://www.tejedormoreno.com/',
+    'https://collatzeral.streamlit.app/',
+    'https://graphicator.streamlit.app/',
+    'https://talsa-mailing.streamlit.app/'
+    ]
+```
+
+En este archivo se pueden agregar nuevas urls a visitar periódicamente, configurar el tipo de proxy etc.
+
+Actualmente sólo está habilitado para utilizar el navegador **Chrome** (En el Dockerfile solo instalamos Chrome y Chromedriver.)
 
 ## SemVer
 
